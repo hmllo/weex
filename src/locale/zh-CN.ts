@@ -1,0 +1,53 @@
+export default {
+    common: {
+        appName: "WEEX",
+        copySuccess: "复制成功",
+        noData: "没有数据",
+    },
+    noDapp: {
+        title: "提醒",
+        subtitle: "请访问钱包",
+        desc: "您当前访问的是去中心化网站，请在Coinbase Wallet中打开此网页",
+        copyLink: "复制链接",
+    },
+    quickEntry: {
+        account: "我的账号",
+        trade: "交易",
+        ai: "Ai量化",
+        nft: "NFT",
+        welfare: "福利任务",
+        simulate: "模拟交易",
+        activity: "活动",
+        share: "分享"
+    },
+    market: {
+        title: "市场",
+        recommend: "推荐",
+        collection: "收藏",
+        crypto: "加密货币",
+        forex: "外汇",
+        futures: "期货",
+        index: "指数",
+    },
+    menu: {
+        join: "立刻加入",
+        index: "首页",
+        myAccount: "我的账号",
+        trade: "交易",
+        nft: "NFT",
+        kyc: "身份认证",
+        activity: "活动",
+        record: "记录",
+        share: "分享",
+        service: "客服",
+        notice: "公告",
+        news: "新闻",
+        qa: "Q&A",
+        switch: "切换语言",
+        connectwallet: '连接钱包',
+        confirm: '确认',
+        confirmTip: '激活账户加入需要支付ETH手续费',
+        approve_ok: '操作成功',
+        approve_fail: '操作失败',
+    }
+}
