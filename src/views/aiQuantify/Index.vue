@@ -1,43 +1,78 @@
 <template>
-    <van-nav-bar title="Ai量化" left-arrow @click-left="back" :border="false" />
+    <van-nav-bar title="Ai量化" left-arrow  :border="false" >
+      <template #left >
+        <img class="backIcon" src="/src/assets/products/backIcon.png" alt="" @click="backEven">
+      </template>
+    </van-nav-bar>
     <div class="list">
-        <div class="list-item" v-for="item in list" :key="item.id">
-            <div class="header">
-                <div class="title">{{ item.title }}</div>
-            </div>
-            <div class="body">
-                <div class="item">
-                    <div class="title">限额(USDT)</div>
-                    <div class="value">{{ item.money }} - {{ item.money }}</div>
-                </div>
-                <div class="item">
-                    <div class="title">每日收益</div>
-                    <div class="value">{{ item.rate }}</div>
-                </div>
-                <div class="item">
-                    <div class="title">周期</div>
-                    <div class="value">{{ item.day }}天</div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="icons">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <div class="button">托管</div>
-            </div>
+       <div class="list-item" v-for="item in list" :key="item.id">
+         <div class="header">
+           <div class="title">{{ item.title }}</div>
+         </div>
+         <div class="body">
+           <div class="item">
+             <div class="title">限额(USDT)</div>
+             <div class="value">{{ item.money }} - {{ item.money }}</div>
+           </div>
+           <div class="item">
+             <div class="title">每日收益</div>
+             <div class="value">{{ item.rate }}</div>
+           </div>
+           <div class="item">
+             <div class="title">周期</div>
+             <div class="value">{{ item.day }}天</div>
+           </div>
+         </div>
+         <div class="footer">
+           <div class="logoList">
+             <img  v-for="(item,index) in logoIcon" :key="index"  :src="item">
+           </div>
+         </div>
+       </div>
+       <div class=" trusteeship boxBackground">
+        <h5 class="quanTitle">托管金额</h5>
+        <van-cell-group inset  >
+          <van-field
+              class="inputClass"
+              v-model="value1"
+              label="USDT"
+              left-icon="src/assets/products/Tether.png"
+              right-text="全部"
+              placeholder="金额"
+              label-align="left"
+              label-width="40px"
+              label-class="leftClass"
+              icon-prefix="prefixIcon"
+          >
+            <template #button>
+              <text class="allText">全部</text>
+            </template>
+          </van-field>
+        </van-cell-group>
+        <div class="moneyText">可用金额:206,1770 USDT </div>
+        <van-button block class="btnClass" @click="btn">立即托管</van-button>
+        <div class="Instructions">
+          <span><van-icon name="success" />每日收益将发送到您的USDT钱包</span>
+          <span><van-icon name="success" />您的托管资金零风险</span>
+          <span><van-icon name="success" />您可以在任何时间取回您的资金</span>
+          <span><van-icon name="success" />AI机器人365*24小时不间断工作</span>
         </div>
+      </div>
     </div>
 </template>
-    
+
 <script setup lang='ts'>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const Router = useRouter()
 const tabCur = ref(0)
+const logoIcon = ref([
+  'src/assets/products/money.png',
+  'src/assets/products/logo.png',
+  'src/assets/products/Tether.png',
+  'src/assets/products/eth.png'
+])
 const statusJson = {
     1: '待开始',
     2: '进行中',
@@ -50,57 +85,9 @@ const params = reactive({
     size: 5
 })
 const getList = () => {
-    total.value = 10
+    total.value = 1
     list.value = [{
         id: 1,
-        title: 'quantification',
-        status: 1,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }, {
-        id: 2,
-        title: 'quantification',
-        status: 2,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }, {
-        id: 3,
-        title: 'quantification',
-        status: 3,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }, {
-        id: 4,
-        title: 'quantification',
-        status: 1,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }, {
-        id: 5,
-        title: 'quantification',
-        status: 1,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }, {
-        id: 6,
-        title: 'quantification',
-        status: 1,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }, {
-        id: 7,
         title: 'quantification',
         status: 1,
         money: 500,
@@ -114,8 +101,11 @@ getList();
 const back = () => {
     Router.back()
 }
+const backEven = () => {
+  Router.back()
+}
 </script>
-    
+
 <style lang="scss" scoped>
 .tabs {
     display: flex;
@@ -191,7 +181,7 @@ const back = () => {
             }
         }
         .button{
-            background-color: rgb(99, 157, 174);
+            background-color: #29A1B2;
             border-radius: 6px;
             margin-top: 16px;
             color: #fff;
@@ -200,6 +190,66 @@ const back = () => {
             font-size: 18px;
         }
     }
+
+}
+.trusteeship{
+  margin: 18px;
+  h5{
+    margin-bottom: 10px
+  }
+}
+.allText{
+  color:#35A5B4;
+  font-weight: bold;
+}
+.inputClass{
+  background:#F4F3F4;
+  margin: 0 0 0 0;
+  align-items: center;;
+}
+.leftClass{
+  color:red
+}
+:root .van-cell-group{
+  margin: 0;
+}
+:root .van-icon{
+  color: #35A5B4;
+  font-size: 15px;
+  padding-right: 10px;
+}
+.moneyText{
+  color:#35A5B4;
+  font-weight: 450;
+  padding: 8px 0;
+  font-size: 13px;
+}
+.btnClass{
+  background: #29A1B2;
+  color:#fff;
+  font-size: 15px;
+  text-align: center;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+.Instructions{
+  color:#333;
+  line-height: 30px;
+  span{
+    display:inline-block;
+  }
+}
+.logoList {
+  display: flex;
+  background: #EBF7F9;
+  border-radius: 5px;
+  align-items: center;
+  padding: 8px;
+  img{
+    width: 25px;
+    height: 25px;
+    margin-right: 8px;
+  }
 
 }
 </style>

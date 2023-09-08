@@ -1,19 +1,118 @@
 <template>
-  <van-nav-bar title="交易" left-arrow @click-left="back" :border="false" >
-    <template #right>
-      <van-icon name="description" size="18" />
-    </template>
-  </van-nav-bar>
-  <div class="header">
-    
-  </div>
-  <div id="container"></div>
-  <div class="btns">
-    <div class="btn">买涨</div>
-    <div class="btn btn2">买跌</div>
-  </div>
+    <van-nav-bar title="交易" left-arrow @click-left="back" :border="false">
+        <template #left>
+            <img class="backIcon" src="/src/assets/products/backIcon.png" alt="" @click="backEven">
+        </template>
+        <template #right>
+            <van-icon name="description" size="18" />
+        </template>
+    </van-nav-bar>
+    <div class="all">
+        <div class="price">
+            <div class="left">
+                <div class="currency"><img class="grIcon" src="/src/assets/products/gn.png">BTC/USDT</div>
+                <div class="money">25694.01000</div>
+                <div class="moneyUSD">$-288.18(-1.11%)</div>
+            </div>
+            <div class="right">
+                <div class="star">
+                    <img src="/src/assets/products/star.png">
+                </div>
+                <div class="highMoney">
+                    <span>高</span>
+                    <em>25694.01000</em>
+                </div>
+                <div class="highMoney">
+                    <span class="">低</span>
+                    <em>25694.01000</em>
+                </div>
+                <div class="highMoney">
+                    <span>开盘价</span>
+                    <em>25694.01000</em>
+                </div>
+            </div>
+        </div>
+        <div class="header">
+        </div>
+        <div id="container">
+        </div>
+    </div>
+
+    <div class="btns">
+        <div class="btn" @click="rose">买涨</div>
+        <div class="btn btn2" @click="fall">买跌</div>
+    </div>
+    <!-- 底部弹出 -->
+    <van-popup v-model:show="showBottom" closeable round position="bottom" :style="{ height: '70%' }">
+        <div class="popupBox">
+            <h5 class="title">BTC交割</h5>
+            <div class="info">
+                <h6 class="name">
+                    <img src="src/assets/products/money.png">
+                    <span>BTC/USDT</span>
+                </h6>
+                <div class="content">
+                    <em>交割时间</em>
+                    <div class="select">
+                        <div class="time" @click="()=>showTime=true">
+                            <span>3s</span>
+                            <van-icon name="arrow-down" />
+                        </div>
+                        <div class="button">
+                            <div class="btn btn1" :class="num == 0 ? 'active' : ''" @click="active(0)">涨</div>
+                            <div class="btn btn2" :class="num == 1 ? 'active' : ''" @click="active(1)">跌</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <em class="moneyFw">价格范围</em>
+                    <div>
+                        <div class="cell" @click="radius">
+                            <span>{{ fieldValue }}</span>
+                            <van-icon name="arrow-down" />
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <em class="moneyFw">购买金额 </em>
+                    <div class="cell usdt">
+                        <div class="info">
+                            <img class="img" src="src/assets/products/Tether.png" alt="">
+                            <span>USDT</span>
+                        </div>
+                        <input type="text" v-model="buymoney">
+                    </div>
+                    <div class="moneyText">可用金额:206,1770 USDT </div>
+                    <van-button block class="btnClass" @click="btn">立即托管</van-button>
+                </div>
+            </div>
+        </div>
+    </van-popup>
+
+    <van-popup v-model:show="showPicker" closeable round position="bottom">
+        <div class="radiusClass">
+            <div class="title">
+                <h5>选择范围</h5>
+            </div>
+            <div class="list" v-for="(item, index) in columnsField" :key="`item${index}`">
+                <div class="col">{{ item.text }}</div>
+                <div>{{ item.name }}</div>
+            </div>
+        </div>
+    </van-popup>
+
+    <van-popup v-model:show="showTime" closeable round position="bottom">
+        <div class="radiusClass">
+            <div class="title">
+                <h5>交割时间</h5>
+            </div>
+            <div class="time">
+                <div class="time-item" v-for="item in 10" :key="`time${item}`">{{ item }}s</div>
+            </div>
+        </div>
+    </van-popup>
 </template>
-  
+
 <script setup lang='ts'>
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -21,6 +120,25 @@ import { KLineChartPro } from '@klinecharts/pro'
 import '@klinecharts/pro/dist/klinecharts-pro.css'
 
 const Router = useRouter()
+const showBottom = ref(true)
+const result = ref(true)
+const value1 = ref(0);
+const value2 = ref(0);
+const num = ref(0);
+const showPicker = ref(false)
+const fieldValue = ref("涨 | >0.05%")
+const buymoney = ref(0)
+const showTime = ref(false)
+const option1 = [
+    { text: '3S', value: 0 },
+    { text: '4S', value: 1 },
+    { text: '5S', value: 2 },
+];
+const columnsField = [
+    { text: '涨 | >0.05%', name: '收益率 0.5', value: 'Hangzhou', },
+    { text: '涨 | >0.05%', name: '收益率 0.5', value: 'Ningbo' },
+    { text: '涨 | >0.05%', name: '收益率 0.5', value: 'Wenzhou' },
+]
 
 const chartData = ref({
     "ticker": "BABA",
@@ -2134,114 +2252,453 @@ const chartData = ref({
     "count": 210
 })
 class CustomDatafeed {
-  /**
-   * 模糊搜索标的
-   * 在搜索框输入的时候触发
-   * 返回标的信息数组
-   * (search?: string): Promise<SymbolInfo[]>
-   */
-  searchSymbols (search) {
-    console.log('searchSymbols',search)
-    // 根据模糊字段远程拉取标的数据
-  }
+    /**
+     * 模糊搜索标的
+     * 在搜索框输入的时候触发
+     * 返回标的信息数组
+     * (search?: string): Promise<SymbolInfo[]>
+     */
+    searchSymbols(search) {
+        console.log('searchSymbols', search)
+        // 根据模糊字段远程拉取标的数据
+    }
 
-  /**
-   * 获取历史k线数据
-   * 当标的和周期发生变化的时候触发
-   * 
-   * 返回标的k线数据数组
-   * (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]>
-   */
-  getHistoryKLineData (symbol, period, from, to) {
-    console.log('getHistoryKLineData',symbol, period, from, to)
-    // 完成数据请求
-    return chartData.value.results.map(e=>({
-        timestamp: e.t,
-        open: e.o,
-        high: e.h,
-        low: e.l,
-        close: e.c,
-        volume: e.v,
-        turnover: e.t,
-    }))
-  }
+    /**
+     * 获取历史k线数据
+     * 当标的和周期发生变化的时候触发
+     *
+     * 返回标的k线数据数组
+     * (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]>
+     */
+    getHistoryKLineData(symbol, period, from, to) {
+        console.log('getHistoryKLineData', symbol, period, from, to)
+        // 完成数据请求
+        return chartData.value.results.map(e => ({
+            timestamp: e.t,
+            open: e.o,
+            high: e.h,
+            low: e.l,
+            close: e.c,
+            volume: e.v,
+            turnover: e.t,
+        }))
+    }
 
-  /**
-   * 订阅标的在某个周期的实时数据
-   * 当标的和周期发生变化的时候触发
-   * 
-   * 通过callback告知图表接收数据
-   * (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void
-   */
-  subscribe (symbol, period, callback) {
-    console.log('subscribe',symbol, period, callback)
-    // 完成ws订阅或者http轮询
-  }
+    /**
+     * 订阅标的在某个周期的实时数据
+     * 当标的和周期发生变化的时候触发
+     *
+     * 通过callback告知图表接收数据
+     * (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void
+     */
+    subscribe(symbol, period, callback) {
+        console.log('subscribe', symbol, period, callback)
+        // 完成ws订阅或者http轮询
+    }
 
-  /**
-   * 取消订阅标的在某个周期的实时数据
-   * 当标的和周期发生变化的时候触发
-   * (symbol: SymbolInfo, period: Period): void
-   */ 
-  unsubscribe (symbol, period) {
-    console.log('unsubscribe',symbol, period)
-    // 完成ws订阅取消或者http轮询取消
-  }
+    /**
+     * 取消订阅标的在某个周期的实时数据
+     * 当标的和周期发生变化的时候触发
+     * (symbol: SymbolInfo, period: Period): void
+     */
+    unsubscribe(symbol, period) {
+        console.log('unsubscribe', symbol, period)
+        // 完成ws订阅取消或者http轮询取消
+    }
 }
-onMounted(()=>{
-  const options = {
-    container: 'container',
-    locale: 'zh-CN',
-    drawingBarVisible: false,
-    watermark: '',
-    symbol: {},
-    period: { multiplier: 15, timespan: 'minute', text: '15min' },
-    periods: [
-      { multiplier: 1, timespan: 'minute', text: '1min' },
-      { multiplier: 5, timespan: 'minute', text: '5min' },
-      { multiplier: 15, timespan: 'minute', text: '15min' },
-      { multiplier: 30, timespan: 'minute', text: '30min' },
-      { multiplier: 1, timespan: 'hour', text: '1h' },
-      { multiplier: 1, timespan: 'day', text: '1day' }
-    ],
-    subIndicators: ['VOL'], //['VOL', 'MACD']
-    datafeed: new CustomDatafeed()
-  }
-  new KLineChartPro(options)
+onMounted(() => {
+    const options = {
+        container: 'container',
+        locale: 'zh-CN',
+        drawingBarVisible: false,
+        watermark: '',
+        symbol: {},
+        period: { multiplier: 15, timespan: 'minute', text: '15min' },
+        periods: [
+            { multiplier: 1, timespan: 'minute', text: '1min' },
+            { multiplier: 5, timespan: 'minute', text: '5min' },
+            { multiplier: 15, timespan: 'minute', text: '15min' },
+            { multiplier: 30, timespan: 'minute', text: '30min' },
+            { multiplier: 1, timespan: 'hour', text: '1h' },
+            { multiplier: 1, timespan: 'day', text: '1day' }
+        ],
+        subIndicators: ['VOL'], //['VOL', 'MACD']
+        datafeed: new CustomDatafeed()
+    }
+    new KLineChartPro(options)
 })
+const backEven = () => {
+    Router.back()
+}
+const rose = () => {
+    showBottom.value = true
+}
+const fall = () => {
+    showBottom.value = true
+}
 
-const back = () => {
-  Router.back()
+const radius = () => {
+    showPicker.value = true
+}
+const close = () => {
+    showPicker.value = false
+}
+const active = (index) => {
+    console.log('index', index)
+    num.value = index
 }
 </script>
-  
+
 <style lang="scss" scoped>
-#container{
-  height: 500px;
+#container {
+    height: 500px;
 }
-.btns{
-  display: flex;
-  margin-top: 40px;
-  .btn{
-    flex: 1;
-    height: 40px;
+
+.colorBgr {
+    color: red;
+}
+
+.popupBox {
+    .title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        height: 50px;
+        line-height: 50px;
+        border-bottom: 1px solid #F3F3F3;
+    }
+
+    .name {
+        text-align: center;
+        padding: 15px 20px 10px 20px;
+
+        img {
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+        }
+
+        span {
+            display: inline-block;
+            padding-left: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+    }
+
+    .content {
+        padding: 0px 20px;
+
+        em {
+            display: inline-block;
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            padding: 0;
+        }
+
+    }
+
+    .select {
+        display: flex;
+        justify-content: space-between;
+
+        .time {
+            width: 100px;
+            height: 46px;
+            background: #f4f4f4;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+
+            span {
+                font-weight: 500;
+                font-size: 16px;
+            }
+
+            .van-icon {
+                font-size: 18px;
+                color: #ccc;
+            }
+        }
+
+        .button {
+            display: flex;
+
+            .btn {
+                width: 90px;
+                height: 46px;
+                font-size: 16px;
+                line-height: 46px;
+                text-align: center;
+                background: #f4f4f4;
+            }
+
+            .btn1 {
+                border-top-left-radius: 6px;
+                border-top-right-radius: 0;
+                border-bottom-left-radius: 6px;
+                border-bottom-right-radius: 0;
+                clip-path: polygon(0px 0px, 90px 0px, 70px 46px, 0px 46px);
+                padding-right: 10px;
+            }
+
+            .btn2 {
+                border-top-left-radius: 0;
+                border-top-right-radius: 6px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 6px;
+                clip-path: polygon(20px 0px, 90px 0px, 90px 46px, 0 46px);
+                margin-left: -16px;
+                padding-left: 10px;
+            }
+
+            .active {
+                background: #29A1B2;
+                color: #fff;
+            }
+
+        }
+    }
+
+
+
+    .inputClass {
+        background: #F4F3F4;
+        margin: 0 0 0 0;
+        align-items: center;
+        ;
+    }
+
+    .moneyText {
+        color: #35A5B4;
+        font-weight: 450;
+        padding: 8px 0;
+        font-size: 13px;
+    }
+
+    .btnClass {
+        background: #29A1B2;
+        color: #fff;
+        font-size: 15px;
+        text-align: center;
+        margin: 10px 0;
+        border-radius: 6px;
+    }
+}
+
+.radiusClass {
+    .title {
+        width: 100%;
+        text-align: center;
+        height: 60px;
+        line-height: 60px;
+        border-bottom: 1px solid #f4f4f4;
+
+        h5 {
+            display: inline;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        em {
+            position: absolute;
+            right: 20px;
+        }
+    }
+
+    .list {
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #f4f4f4;
+
+        .col {
+            color: #29A1B2
+        }
+    }
+    .time{
+        padding: 0 20px;
+        height: 200px;
+        overflow-y: auto;
+    }
+    .time-item{
+        display: block;
+        line-height: 40px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+}
+
+:root .van-cell-group {
+    margin: 0;
+}
+
+:root .van-dropdown-menu__bar {
+    background: #f4f4f4
+}
+
+.van-dropdown-menu .van-dropdown-menu {
+    background: red
+}
+
+:root .field {
+    background: #f4f4f4;
     border-radius: 6px;
-    line-height: 40px;
-    text-align: center;
-    color: #fff;
-    font-size: 18px;
-    background-color: rgb(99,157,174);
-    margin: 0 16px;
-  }
-  .btn2{
-    background-color: rgb(205,97,85);
-  }
+    height: 50px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+.cell {
+    background-color: #f4f4f4;
+    border-radius: 6px;
+    padding: 0 16px;
+    height: 46px;
+    line-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+        font-weight: 500;
+        font-size: 14px;
+        color: #35A5B4;
+    }
+
+    .van-icon {
+        font-size: 18px;
+        color: #ccc;
+    }
+
+    &.usdt {
+        justify-content: flex-start;
+
+        .img {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+        }
+
+        .info {
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            margin-left: 20px;
+            border: none;
+            height: 26px;
+            background-color: transparent;
+            flex: 1;
+            font-size: 14px;
+        }
+    }
+}
+
+.btns {
+    display: flex;
+    margin: 40px 0;
+
+    .btn {
+        flex: 1;
+        height: 40px;
+        border-radius: 6px;
+        line-height: 40px;
+        text-align: center;
+        color: #fff;
+        font-size: 18px;
+        background-color: rgb(99, 157, 174);
+        margin: 0 16px;
+    }
+
+    .btn2 {
+        background-color: rgb(205, 97, 85);
+    }
+}
+
+:root .van-nav-bar .van-icon {
+    color: #333
+}
+
+.all {
+    margin: 18px;
+}
+
+.grIcon {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.price {
+    display: flex;
+    justify-content: space-between;
+
+    .left {
+        div {
+            margin-bottom: 9px;
+        }
+
+        .currency {
+            font-weight: bold;
+        }
+
+        .money {
+            color: #52a1b3;
+            font-weight: bold;
+            font-size: 29px;
+        }
+
+        .moneyUSD {
+            color: red;
+            font-weight: 400;
+        }
+    }
+
+    .right {
+
+        div {
+            margin-bottom: 9px;
+        }
+
+        .star {
+            text-align: right;
+
+            img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        .highMoney {
+            display: flex;
+            justify-content: space-between;
+
+            span {
+                color: #666;
+                font-size: 12px;
+            }
+
+            em {
+                font-style: normal;
+                color: #333;
+                font-size: 14px;
+            }
+        }
+    }
 }
 </style>
 <style>
 .klinecharts-pro-period-bar .tools,
 .klinecharts-pro-period-bar .symbol,
-.klinecharts-pro-period-bar .menu-container{
-  display: none;
+.klinecharts-pro-period-bar .menu-container {
+    display: none;
 }
 </style>

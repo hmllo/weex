@@ -1,5 +1,9 @@
 <template>
-    <van-nav-bar title="托管订单" left-arrow @click-left="back" :border="false" />
+    <van-nav-bar title="托管订单" left-arrow :border="false">
+      <template #left >
+        <img class="backIcon" src="/src/assets/products/backIcon.png" alt="" @click="backEven">
+      </template>
+    </van-nav-bar>
     <div class="tabs">
         <div class="tabs-item" :class="{ active: !tabCur }" @click="() => tabCur = 0">进行中</div>
         <div class="tabs-item" :class="{ active: tabCur }" @click="() => tabCur = 1">已结束</div>
@@ -29,7 +33,7 @@
         <div class="more" v-show="list.length < total" @click="()=>(params.page++,getList())">加载更多</div>
     </div>
 </template>
-    
+
 <script setup lang='ts'>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -109,11 +113,11 @@ const getList = () => {
 }
 getList();
 
-const back = () => {
+const backEven = () => {
     Router.back()
 }
 </script>
-    
+
 <style lang="scss" scoped>
 .tabs {
     display: flex;

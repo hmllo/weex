@@ -1,5 +1,9 @@
 <template>
-    <van-nav-bar title="Ai量化" left-arrow @click-left="back" :border="false" />
+    <van-nav-bar title="Ai量化" left-arrow  :border="false">
+      <template #left >
+        <img class="backIcon" src="/src/assets/products/backIcon.png" alt="" @click="backEven">
+      </template>
+    </van-nav-bar>
     <div class="info">
         <div class="header">
             <div class="item">
@@ -19,7 +23,7 @@
             <van-icon size="20px" color="#ccc" name="arrow" />
         </div>
     </div>
-    <div class="info">
+    <div class="info" @click="seeOrder">
         <div class="link">
             <div class="link-info">
                 <div class="title">查询订单</div>
@@ -47,23 +51,26 @@
                 </div>
             </div>
             <div class="footer">
-                <div class="icons">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div class="logoList">
+                  <img  v-for="(item,index) in logoIcon" :key="index"  :src="item">
                 </div>
-                <div class="button">托管</div>
+                <div class="button" @click="btn">托管</div>
             </div>
         </div>
     </div>
 </template>
-    
+
 <script setup lang='ts'>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const Router = useRouter()
+const logoIcon = ref([
+  'src/assets/products/money.png',
+  'src/assets/products/logo.png',
+  'src/assets/products/Tether.png',
+  'src/assets/products/eth.png'
+])
 
 const info = ref({
     money: 0.0652345,
@@ -77,11 +84,20 @@ const info = ref({
     date: '2023-08-29 23:16:51'
 })
 
-const back = () => {
+const backEven = () => {
     Router.back()
 }
+
+const seeOrder =()=>{
+  Router.push({ path: "/order" })
+}
+
+const btn = (num) => {
+  console.log('dfwer')
+  Router.push({path: "/aiQuantify"})
+}
 </script>
-    
+
 <style lang="scss" scoped>
 .info{
     margin: 16px 16px 0;
@@ -120,7 +136,6 @@ const back = () => {
 }
 
 .list {
-
     .list-item {
         margin: 16px 16px 0;
         padding: 0 16px 16px;
@@ -172,7 +187,7 @@ const back = () => {
             }
         }
         .button{
-            background-color: rgb(99, 157, 174);
+            background: #29A1B2;
             border-radius: 6px;
             margin-top: 16px;
             color: #fff;
@@ -182,5 +197,24 @@ const back = () => {
         }
     }
 
+}
+.logoList {
+  display: flex;
+  background: #EBF7F9;
+  border-radius: 5px;
+  align-items: center;
+  padding: 8px;
+  img{
+    width: 25px;
+    height: 25px;
+    margin-right: 8px;
+  }
+
+}
+.quanTitle{
+  font-size: 18px;
+  color: #222;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #cfcfcf;
 }
 </style>
